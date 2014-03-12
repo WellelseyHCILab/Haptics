@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class HapticObject : MonoBehaviour {
-
+	
     public GameObject stylus;
     public GameObject core;
     public GameObject _oldHoverObject;
@@ -61,6 +61,11 @@ public class HapticObject : MonoBehaviour {
 			    repeat = 0;
 			    break;
 			case 4:                      // cube
+			    on = 0.2f;
+			    off = 0.2f;
+			    repeat = 0;
+			    break;
+			case 5:
 			    on = 0.3f;
 			    off = 0.3f;
 			    repeat = 0;
@@ -81,11 +86,11 @@ public class HapticObject : MonoBehaviour {
 	void roll() {
 		Vector3 velocity = sphere.rigidbody.velocity;
 		if((velocity[0] != 0 || velocity[2] != 0) && velocity[1] == 0){
-		    print (velocity);
+		    //print (velocity);
 		    if (isRolling == false) {
 		        isRolling = true;
 		        hapticSetting(2); 
-		        //print ("roll");
+		        print ("roll");
 		    }		        			
 		} else {
 		    if (isRolling == true)
@@ -98,7 +103,7 @@ public class HapticObject : MonoBehaviour {
 	void hover() {		
 	   GameObject hoverObject = stylus.GetComponent<ZSStylusSelector>().hoveredObject;
 	   if ((hoverObject != _oldHoverObject) && (hoverObject != null)){
-	       hapticSetting (1);
+	       hapticSetting (0);
 	       _oldHoverObject = hoverObject;
 	   }           
     }
@@ -108,6 +113,16 @@ public class HapticObject : MonoBehaviour {
 		//print (this.gameObject.name);
 		//print (collision.gameObject.name);
 		if (this.gameObject.name.Equals("Sphere")) hapticSetting(3); 
-		if (this.gameObject.name.Equals("Cube")) hapticSetting(4);
+		if (this.gameObject.name.Equals("Cube")){
+		    if (collision.gameObject.name.Equals("Floor")) {
+		        print (this.gameObject.rigidbody.velocity.y);
+		        if (this.gameObject.rigidbody.velocity.y <= -3 || this.gameObject.rigidbody.velocity.y >= 1)
+					hapticSetting(5);
+				else if (this.gameObject.rigidbody.velocity.y <= -2 || this.gameObject.rigidbody.velocity.y >= 0)
+				    hapticSetting(4);
+				else if (this.gameObject.rigidbody.velocity.y <= 0)
+				    hapticSetting(3);
+			}
+		}
 	}
 }
